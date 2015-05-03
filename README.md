@@ -25,12 +25,12 @@ You can find more information on:
 Actually, this version is not a full version. You can share files to friends without any servers but it is not a peers-to-peers network. Which means the content serving capacity can't actually increase as more users begin to access the content. Maybe we can archive this part after half a year or longer?
 
 ##Instructions
-1.Open the website and click the start button to create a room for your friends.
-2.Now you have created a room, send the link to your friends so that they can get into your room with it.
-3.You can see each others who have visit the link on the list.
-4.Click the button to send them a file.
-5.Download the file who sent it.
-6.You can also share the file with more than two friends.
+1. Open the website and click the start button to create a room for your friends.
+2. Now you have created a room, send the link to your friends so that they can get into your room with it.
+3. You can see each others who have visit the link on the list.
+4. Click the button to send them a file.
+5. Download the file who sent it.
+6. You can also share the file with more than two friends.
 
 ![](dist/1.png)
 ![](dist/2.png)
