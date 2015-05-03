@@ -1,4 +1,4 @@
-# Web Browsers P2p
+# Web Browsers P2P
 > IT Infrastructure
 
 ##Introduction
@@ -26,15 +26,10 @@ Actually, this version is not a full version. You can share files to friends wit
 
 ##Instructions
 1.Open the website and click the start button to create a room for your friends.
-
 2.Now you have created a room, send the link to your friends so that they can get into your room with it.
-
 3.You can see each others who have visit the link on the list.
-
 4.Click the button to send them a file.
-
 5.Download the file who sent it.
-
 6.You can also share the file with more than two friends.
 
 ![](dist/1.png)
