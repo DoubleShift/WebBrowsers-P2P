@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html>
+    <head> 
+    
+        <title>Browers P2P Demo</title>
+        <meta charset="utf-8">
+      
+         <link rel="stylesheet" href="css/style.css">
+
+        <!-- Fonts -->
+        <link href='https://fonts.googleapis.com/css?subset=cyrillic,latin&family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+        <link rel="shortcut icon" href="img/favicon.ico">
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script src="http://simplewebrtc.com/latest.js"></script>
+
+    </head>
+
+    <body>
+    <!-- Head Bar -->
+    <table id="header" cellpadding="0" cellspacing="0" border="0">
+<tr valign="middle">
+    <td width="50">&nbsp;</td>
+    <td id="header-text" onclick="location.href='/'"><span class="green">B</span>rowers<span class="green">P2P</span></td>
+    <td width="400" align="center">
+        <img class="language" src="img/fi.png" onclick="" />
+        <img class="language" src="img/en.png" onclick=""  />
+        <img class="language" src="img/cn.png" onclick=""  />
+    </td>
+    <td align="right">
+
+        <div class="menu-item help" onclick="location.href='/'">
+        <img class="menu-image" src="img/logout.png">
+        <span class="menu-text ">Logout</span>
+        </div>
+     
+    </td>
+    <td width="50">&nbsp;</td>
+</tr></table>
+
+
+
+<!-- Main Body  -->
+
+<!-- Start Button-->
+<div class=" welcome" id="div-createRoom">
+<div class="wrapper" id="welcome">
+<h3 class="logo"><span>Press start to create a room</span></h3>
+
+<div class="row" >
+        <form id="createRoom" >
+            <button disabled type="submit" class="col left exercise highlight">START!</button>
+        </form>
+</div>
+</div>
+</div>
+     
+
+<!-- User Table-->
+    <div  id="div-usertable" style="display:none;">
+
+        <div class="heading">
+            <h3 id="title">Start a room</h3>
+            <p id="subTitle"></p>
+        </div>
+
+        <div class="body" id="remotes">
+        
+            <table width="100%" cellpadding="0" cellspacing="1" id="ranktable">
+           
+                <thead>
+                    <tr class="ranktitle"><th>Peer</th><th>File</th><th>Progress</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+  
+                 
+                </tbody>
+            </table>
+       </div>
+    </div>
+
+
+
+</div>
+
+        <script>
+// grab the room from the URL
+var room = location.search && location.search.split('?')[1];
+
+// create our webrtc connection
+var webrtc = new SimpleWebRTC({
+    // we don't do video
+    localVideoEl: '',
+    remoteVideosEl: '',
+    // dont ask for camera access
+    autoRequestMedia: false,
+    // dont negotiate media
+    receiveMedia: {
+        mandatory: {
+            OfferToReceiveAudio: false,
+            OfferToReceiveVideo: false
+        }
+    }
+});
+
+
+// called when a peer is created
+webrtc.on('createdPeer', function (peer) {
+    console.log('createdPeer', peer);
+    var remotes = document.getElementById('remotes');
+    if (!remotes) return;
+    
+     $("#ranktable>tbody").append('<tr class="rankitem"><td><div>'+peer.id+'</div></td><td><input type="file" id="file-input"></td><td><progress id="progress-file" value="0"></progress></td><td><div id="text-status"></div</td></tr>');
+
+    var fileinput = document.getElementById('file-input');
+
+
+    // send a file
+    fileinput.addEventListener('change', function() {
+        fileinput.disabled = true;
+
+        var file = fileinput.files[0];
+        var sender = peer.sendFile(file);
+
+        var sendProgress = document.getElementById('progress-file');
+        sendProgress.max = file.size;
+    
+        var status = document.getElementById('text-status');
+        
+
+        // hook up send progress
+        sender.on('progress', function (bytesSent) {
+            sendProgress.value = bytesSent;
+        });
+        // sending done
+        sender.on('sentFile', function () {
+            status.innerText = "sent";
+            // we allow only one filetransfer at a time
+            fileinput.removeAttribute('disabled');
+        });
+        
+        // receiver has actually received the file
+        sender.on('complete', function () {
+            // safe to disconnect now
+        });
+        
+    }, false);
+    fileinput.disabled = 'disabled';
+
+    //show the ice connection state
+    if (peer && peer.pc) {
+        var connstate = document.getElementById('text-status');
+        peer.pc.on('iceConnectionStateChange', function (event) {
+            var state = peer.pc.iceConnectionState;
+            console.log('state', state);
+            // container.className = 'peerContainer p2p' + state.substr(0, 1).toUpperCase()
+            //     + state.substr(1);
+            switch (state) {
+            case 'checking': 
+                connstate.innerText = 'Connecting';
+                break;
+            case 'connected':
+            case 'completed': // on caller side
+                connstate.innerText = 'Connected';
+                // enable file sending on connnect
+                fileinput.removeAttribute('disabled');
+                break;
+            case 'disconnected':
+                connstate.innerText = 'Disconnected.';
+                break;
+            case 'failed':
+                // not handled here
+                break;
+            case 'closed':
+                connstate.innerText = 'Closed';
+
+                // disable file sending
+                fileinput.disabled = 'disabled';
+                // FIXME: remove container, but when?
+                break;
+            }
+        });
+    }
+
+    // receiving an incoming filetransfer
+    peer.on('fileTransfer', function (metadata, receiver) {
+        console.log('incoming filetransfer', metadata);
+       
+       metadata.name+metadata.size;
+
+        // create a progress element
+        var receiveProgress = document.getElementById('progress-file');
+        receiveProgress.max = metadata.size;
+
+        // hook up receive progress
+        receiver.on('progress', function (bytesReceived) {
+            receiveProgress.value = bytesReceived;
+        });
+        
+        // get notified when file is done
+        receiver.on('receivedFile', function (file, metadata) {
+            console.log('received file', metadata.name, metadata.size);
+            
+            var textstatus = document.getElementById('text-status');
+            var href = document.createElement('a');
+            href.href = URL.createObjectURL(file);
+            href.download = metadata.name;
+            href.appendChild(document.createTextNode('download'));
+            textstatus.innerText = '';
+            textstatus.appendChild(href);
+
+            
+            // close the channel
+            receiver.channel.close();
+        });
+    });
+});
+
+// local p2p/ice failure
+webrtc.on('iceFailed', function (peer) {
+    var connstate = document.querySelector('#container_' + webrtc.getDomId(peer) + ' .connectionstate');
+    console.log('local fail', connstate);
+    if (connstate) {
+        connstate.innerText = 'Connection failed.';
+        fileinput.disabled = 'disabled';
+    }
+});
+
+// remote p2p/ice failure
+webrtc.on('connectivityError', function (peer) {
+    var connstate = document.querySelector('#container_' + webrtc.getDomId(peer) + ' .connectionstate');
+    console.log('remote fail', connstate);
+    if (connstate) {
+        connstate.innerText = 'Connection failed.';
+        fileinput.disabled = 'disabled';
+    }
+});
+
+function setRoom(name) {
+    //remove the create button after created a room
+    document.getElementById('div-createRoom').remove();
+    //show users table
+    document.getElementById('div-usertable').style.display = '';
+    document.getElementById('title').innerText = 'Room: ' + name;
+    document.getElementById('subTitle').innerText =  'Send link to your friend: ' + location.href;
+    $('body').addClass('active');
+}
+
+
+//create a room 
+if (room) {
+    setRoom(room);
+    webrtc.joinRoom(room, function (err, res) {
+        console.log('joined', room, err, res);
+    });
+} else {
+    $('form>button').attr('disabled', null);
+    $('form').submit(function () {
+        //generate a room name
+        var val = Math.random().toString(36).substr(2);
+
+        //create a room
+        webrtc.createRoom(val, function (err, name) {
+            console.log(' create room cb', name);
+        
+            var newUrl = location.pathname + '?' + name;
+            if (!err) {
+                history.replaceState({foo: 'bar'}, null, newUrl);
+                setRoom(name);
+            } else {
+                console.log(err);
+            }
+        });
+        return false;          
+    });
+}
+        </script>
+    </body>
+</html>
