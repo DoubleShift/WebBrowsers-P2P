@@ -4,6 +4,7 @@
 ##Introduction
 We are going to archive Peer-to-Peer file transfer between web browsers. 
 By using webRTC, data could transfer between browsers without any data servers.
+But we still need a server for signal and nat.
 
 Here is the same stuff what we are going to do [reep.io](https://reep.io/).
 
