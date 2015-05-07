@@ -1,17 +1,35 @@
 # Web Browsers P2P
 > IT Infrastructure
 
-##Introduction
-We are going to archive Peer-to-Peer file transfer between web browsers. 
-By using webRTC, data could transfer between browsers without any data servers.
-But we still need a server for signal and nat.
+| Name          | ID      | Email                    |
+|---------------|---------|--------------------------|
+| ChenXin       | 2439271 | dbchenxin@gmail.com      |
+| Liang Shulang | 2441816 | liangshulang@hotmail.com |
+| Li Wen        | 2441803 | 8717183@qq.com           |
 
+
+##Introduction
+
+We choose this topic because we always have trouble while we send big files to friends who live in China.
+We usually share files by using dropbox, gDrive or something, unfortunately all of them are blocked in China. 
+Although we can upload it to my webserver but they don't have. So we want to write something that can share files with friends online.
+
+We archived Peer-to-Peer file transfer between web browsers. 
 Here is the same stuff what we are going to do [reep.io](https://reep.io/).
+And here is our [Online Demo](http://doubleshift.github.io/WebBrowsers-P2P/).
 
 ##Dependencies
-- [jQuery](https://jquery.com/)
+
+Thanks for HTML5, we have webRTC. At first, we aimed at Websocket which just like socket. But you still need a file server to establish connection with peers. After that we changed to use webRTC which can be used to listen a port on your browser. By using webRTC, data could transfer between browsers without any data servers.But we still need a server for signal and nat.
+
+- [jQuery](https://jquery.com/) 
+> jQuery is a fast, small, and feature-rich JavaScript library. It makes things like HTML document traversal and manipulation, event handling, animation, and Ajax much simpler with an easy-to-use API that works across a multitude of browsers. 
+
 - [simplyWebRTC](http://simplewebrtc.com)
+> WebRTC is a free, open project that provides browsers and mobile applications with Real-Time Communications (RTC) capabilities via simple APIs. The simplyWebRTC make it easier to use the WebRTC api and cross the browsers.
+
 - [GoogleFonts](https://www.google.com/fonts)
+> Make the web pages looks better.
 
 ##Browers Support
 We have used webRTC so it depends which brower supports webRTC.
@@ -46,3 +64,10 @@ You can open two browser tabs for test.
 
 ##Code
 You can always download the latest source code [here](https://github.com/DoubleShift/WebBrowsers-P2P/archive/master.zip)
+
+##References
+1. [peerjs](http://peerjs.com/)
+2. [webRTC](http://www.webrtc.org/)
+3. [Getting Started with webRTC](http://www.html5rocks.com/en/tutorials/webrtc/basics/)
+4. [webRTC prototype 1.0](http://www.w3.org/TR/webrtc/)
+5. [simply webRTC](http://simplewebrtc.com/)
