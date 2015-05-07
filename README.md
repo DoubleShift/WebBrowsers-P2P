@@ -1,5 +1,7 @@
 # Web Browsers P2P
-> IT Infrastructure
+>peer-to-peer file transfers between browsers
+
+IT Infrastructure
 
 | Name          | ID      | Email                    |
 |---------------|---------|--------------------------|
